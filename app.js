@@ -4,10 +4,15 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var partials = require('express-partials');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
+var ordenes = require('./routes/ordenes');  //Import routes for "ordenes" area of site
+var mediciones = require('./routes/mediciones');  //Import routes for "mediciones" area of site
 
+
+//var routes = require('./routes/index');
 var app = express();
 
 // view engine setup
@@ -20,10 +25,17 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+//Set public folder
 app.use(express.static(path.join(__dirname, 'public')));
+//Instalamos MW para vistas parciales
+app.use(partials());
 
 app.use('/', index);
 app.use('/users', users);
+app.use('/ordenes', ordenes); // Add ordenes routes to middleware chain.
+app.use('/mediciones', mediciones); // Add mediciones routes to middleware chain.
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
