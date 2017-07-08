@@ -6,6 +6,9 @@ var ordenController = require('../controllers/orden_controller');
 
 /// ORDEN ROUTES ///
 
+/* GET request for list of all orden items. */
+router.get('/', ordenController.orden_list);
+
 /* GET request for creating a Orden. NOTE This must come before routes that display Orden (uses id) */
 router.get('/create', ordenController.orden_create_get);
 
@@ -25,9 +28,7 @@ router.get('/:id/update', ordenController.orden_update_get);
 router.post('/:id/update', ordenController.orden_update_post);
 
 /* GET request for one orden. */
-router.get('/:id', ordenController.orden_detail);
-
-/* GET request for list of all orden items. */
-router.get('/', ordenController.orden_list);
+router.get('/orden1', ordenController.orden_detail);
+// router.get('/:id', ordenController.orden_detail);
 
 module.exports = router;

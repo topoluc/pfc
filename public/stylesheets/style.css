@@ -1,8 +1,35 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+/* body { */
+  /* padding: 50px; */
+  /* font: 14px "Lucida Grande", Helvetica, Arial, sans-serif; */
+/* } */
+
+/* a { */
+  /* color: #00B7FF; */
+/* } */
+
+
+/* Estilos para la agenda */
+.table-fixed thead {
+  width: 97%;
+}
+.table-fixed tbody {
+  height: 230px;
+  overflow-y: auto;
+  width: 100%;
+}
+.table-fixed thead, .table-fixed tbody, .table-fixed tr, .table-fixed td, .table-fixed th {
+  display: block;
+}
+.table-fixed tbody td, .table-fixed thead > tr> th {
+  float: left;
+  border-bottom-width: 0;
 }
 
-a {
-  color: #00B7FF;
+
+
+/* Estilos para la pagina de inicio */
+.wrap-headline {
+position: relative;
+padding-top: 20%;
+padding-bottom: 20%;
 }

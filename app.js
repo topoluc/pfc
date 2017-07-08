@@ -28,6 +28,7 @@ app.use(cookieParser());
 
 //Set public folder
 app.use(express.static(path.join(__dirname, 'public')));
+
 //Instalamos MW para vistas parciales
 app.use(partials());
 

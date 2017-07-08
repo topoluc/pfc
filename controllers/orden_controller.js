@@ -1,18 +1,17 @@
 
 //Muestra la lista de todas las órdenes
-exports.orden_list = function(req,res) {
-	res.send('NOT IMPLEMENTED: Orden list');
-	// res.render('ordenes/agenda');
+exports.orden_list = function(req, res){
+	res.render('agenda', { title: 'Agenda' });
 };
 
 // Muestra el detalle de cada orden de trabajo
 exports.orden_detail = function(req, res) {
-    res.send('NOT IMPLEMENTED: Orden detail: ' + req.params.id);
+    res.render('detalle', { title: 'Mostrar orden'});
 };
 
 // Muestra el formulario de creación de órdenes on GET
 exports.orden_create_get = function(req, res) {
-    res.send('NOT IMPLEMENTED: Orden create GET');
+    res.render('crearorden', { title: 'Nueva orden'});
 };
 
 // Handle Orden create on POST

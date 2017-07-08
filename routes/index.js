@@ -4,7 +4,7 @@ var router = express.Router();
 /* PostgreSQL and PostGIS module and connection setup */
 var pg = require("pg"); // require Postgres module
 
-/* Setup connection
+/* Setup connection to PostGIS
 var username = "ahg01"
 var password = "pg"
 var host = "localhost"
@@ -23,7 +23,7 @@ router.get('/', function(req, res, next) {
 });
 
 
-
+//De momento no lo borro por si uso un solo enrutador
 //router.get('/ordenes/agenda', ordenController.agenda);
 router.get('/mapa', mapController.map);
 

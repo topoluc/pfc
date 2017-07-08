@@ -1,13 +1,17 @@
-<!-- <!DOCTYPE html> -->
-<!-- <html> -->
-  <!-- <head> -->
-   <title><%= title %></title>
-    <!-- <link rel='stylesheet' href='/stylesheets/style.css' /> -->
-  <!-- </head> -->
-  <!-- <body> -->
-    <h1>Bienvenido a <%= title %></h1>
-    <p>Aplicación web para la gestión de la conservación de carreteras</p>
-	<p><a class="boton" href="/ordenes">Agenda</a></p>
-	<p><a class="boton" href="/mapa">Mapa</a></p>
-  <!-- </body> -->
-<!-- </html> -->
+<title><%= title %></title>
+<!-- <link rel='stylesheet' href='/stylesheets/style.css' /> -->
+    	
+<div class="row">
+	<div class="wrap-headline">
+		<h1 class="text-center">Bienvenido a <%= title %></h1>
+		<h4 class="text-center">Aplicación web para la gestión de la conservación de carreteras</h4>
+		<hr>
+		<ul class="list-inline list-unstyled text-center">
+			<li>
+				<a class="btn btn-primary btn-lg" href="/ordenes" role="button">Agenda</a>
+			</li>
+			<li>
+				<a class="btn btn-primary btn-lg" href="/mapa" role="button">Mapa</a>
+			</li>
+		</ul>
+</div>
