@@ -5,6 +5,9 @@
 		<div class="panel-heading">
 			<h3 class="panel-title">Listar Agenda</h3>
 		</div>
+		
+		<a href="ordenes/create" class="btn btn-default" role="button" data-toggle="tooltip" title="Crear orden"><span class="glyphicon glyphicon-plus-sign"></span></a>
+		
 		<table class="table table-fixed table-hover">
 			<thead>
 				<tr>
@@ -18,141 +21,23 @@
 				</tr>
 			</thead>
 			<tbody>
+				<% for(var i=0; i < ordenes.length; i++) { %>
 				<tr>
-					<td class="col-md-1">1</td>
-					<td class="col-md-1">CO-5211</td>
-					<td class="col-md-1">4+300</td>
-					<td class="col-md-1">4+800</td>
-					<td class="col-md-2">26/12/2017</td>
-					<td class="col-md-2">26/02/2017</td>
+					<td class="col-md-1"><%= ordenes[i].num %></td>
+					<td class="col-md-1"><%= ordenes[i].ctra %></td>
+					<td class="col-md-1"><%= ordenes[i].pkini %></td>
+					<td class="col-md-1"><%= ordenes[i].pkfin %></td>
+					<td class="col-md-2"><%= ordenes[i].fechaini %></td>
+					<td class="col-md-2"><%= ordenes[i].fechafin %></td>
 					<td class="col-md-4">
-						<a href="/ordenes/orden1"><span class="glyphicon glyphicon-eye-open">&nbsp</span></a>
-						<a href="#"><span class="glyphicon glyphicon-pencil">&nbsp</span></a>
-						<a href="#"><span class="glyphicon glyphicon-trash">&nbsp</span></a>
-						<a href="#"><span class="glyphicon glyphicon-map-marker">&nbsp</span></a>
-						<a href="#"><span class="glyphicon glyphicon-saved">&nbsp</span></a>
+						<a href="/ordenes/orden1" data-toggle="tooltip" title="Mostrar orden"><span class="glyphicon glyphicon-eye-open">&nbsp</span></a>
+						<a href="#" data-toggle="tooltip" title="Actualizar orden"><span class="glyphicon glyphicon-pencil">&nbsp</span></a>
+						<a href="#" data-toggle="tooltip" title="Eliminar orden"><span class="glyphicon glyphicon-trash">&nbsp</span></a>
+						<a href="#" data-toggle="tooltip" title="Ver en mapa"><span class="glyphicon glyphicon-map-marker">&nbsp</span></a>
+						<a href="#" data-toggle="tooltip" title="Cerrar orden"><span class="glyphicon glyphicon-saved">&nbsp</span></a>
 					</td>
 				</tr>
-				<tr>
-					<td class="col-md-1">1</td>
-					<td class="col-md-1">CO-5211</td>
-					<td class="col-md-1">4+300</td>
-					<td class="col-md-1">4+800</td>
-					<td class="col-md-2">26/12/2017</td>
-					<td class="col-md-2">26/02/2017</td>
-					<td class="col-md-4">
-						<a href="#"><span class="glyphicon glyphicon-eye-open">&nbsp</span></a>
-						<a href="#"><span class="glyphicon glyphicon-pencil">&nbsp</span></a>
-						<a href="#"><span class="glyphicon glyphicon-trash">&nbsp</span></a>
-						<a href="#"><span class="glyphicon glyphicon-map-marker">&nbsp</span></a>
-						<a href="#"><span class="glyphicon glyphicon-saved">&nbsp</span></a>
-					</td>
-				</tr>
-				<tr>
-					<td class="col-md-1">1</td>
-					<td class="col-md-1">CO-5211</td>
-					<td class="col-md-1">4+300</td>
-					<td class="col-md-1">4+800</td>
-					<td class="col-md-2">26/12/2017</td>
-					<td class="col-md-2">26/02/2017</td>
-					<td class="col-md-4">
-						<a href="#"><span class="glyphicon glyphicon-eye-open">&nbsp</span></a>
-						<a href="#"><span class="glyphicon glyphicon-pencil">&nbsp</span></a>
-						<a href="#"><span class="glyphicon glyphicon-trash">&nbsp</span></a>
-						<a href="#"><span class="glyphicon glyphicon-map-marker">&nbsp</span></a>
-						<a href="#"><span class="glyphicon glyphicon-saved">&nbsp</span></a>
-					</td>
-				</tr>
-				<tr>
-					<td class="col-md-1">1</td>
-					<td class="col-md-1">CO-5211</td>
-					<td class="col-md-1">4+300</td>
-					<td class="col-md-1">4+800</td>
-					<td class="col-md-2">26/12/2017</td>
-					<td class="col-md-2">26/02/2017</td>
-					<td class="col-md-4">
-						<a href="#"><span class="glyphicon glyphicon-eye-open">&nbsp</span></a>
-						<a href="#"><span class="glyphicon glyphicon-pencil">&nbsp</span></a>
-						<a href="#"><span class="glyphicon glyphicon-trash">&nbsp</span></a>
-						<a href="#"><span class="glyphicon glyphicon-map-marker">&nbsp</span></a>
-						<a href="#"><span class="glyphicon glyphicon-saved">&nbsp</span></a>
-					</td>
-				</tr>
-				<tr>
-					<td class="col-md-1">1</td>
-					<td class="col-md-1">CO-5211</td>
-					<td class="col-md-1">4+300</td>
-					<td class="col-md-1">4+800</td>
-					<td class="col-md-2">26/12/2017</td>
-					<td class="col-md-2">26/02/2017</td>
-					<td class="col-md-4">
-						<a href="#"><span class="glyphicon glyphicon-eye-open">&nbsp</span></a>
-						<a href="#"><span class="glyphicon glyphicon-pencil">&nbsp</span></a>
-						<a href="#"><span class="glyphicon glyphicon-trash">&nbsp</span></a>
-						<a href="#"><span class="glyphicon glyphicon-map-marker">&nbsp</span></a>
-						<a href="#"><span class="glyphicon glyphicon-saved">&nbsp</span></a>
-					</td>
-				</tr>
-				<tr>
-					<td class="col-md-1">1</td>
-					<td class="col-md-1">CO-5211</td>
-					<td class="col-md-1">4+300</td>
-					<td class="col-md-1">4+800</td>
-					<td class="col-md-2">26/12/2017</td>
-					<td class="col-md-2">26/02/2017</td>
-					<td class="col-md-4">
-						<a href="#"><span class="glyphicon glyphicon-eye-open">&nbsp</span></a>
-						<a href="#"><span class="glyphicon glyphicon-pencil">&nbsp</span></a>
-						<a href="#"><span class="glyphicon glyphicon-trash">&nbsp</span></a>
-						<a href="#"><span class="glyphicon glyphicon-map-marker">&nbsp</span></a>
-						<a href="#"><span class="glyphicon glyphicon-saved">&nbsp</span></a>
-					</td>
-				</tr>
-				<tr>
-					<td class="col-md-1">1</td>
-					<td class="col-md-1">CO-5211</td>
-					<td class="col-md-1">4+300</td>
-					<td class="col-md-1">4+800</td>
-					<td class="col-md-2">26/12/2017</td>
-					<td class="col-md-2">26/02/2017</td>
-					<td class="col-md-4">
-						<a href="#"><span class="glyphicon glyphicon-eye-open">&nbsp</span></a>
-						<a href="#"><span class="glyphicon glyphicon-pencil">&nbsp</span></a>
-						<a href="#"><span class="glyphicon glyphicon-trash">&nbsp</span></a>
-						<a href="#"><span class="glyphicon glyphicon-map-marker">&nbsp</span></a>
-						<a href="#"><span class="glyphicon glyphicon-saved">&nbsp</span></a>
-					</td>
-				</tr>
-				<tr>
-					<td class="col-md-1">1</td>
-					<td class="col-md-1">CO-5211</td>
-					<td class="col-md-1">4+300</td>
-					<td class="col-md-1">4+800</td>
-					<td class="col-md-2">26/12/2017</td>
-					<td class="col-md-2">26/02/2017</td>
-					<td class="col-md-4">
-						<a href="#"><span class="glyphicon glyphicon-eye-open">&nbsp</span></a>
-						<a href="#"><span class="glyphicon glyphicon-pencil">&nbsp</span></a>
-						<a href="#"><span class="glyphicon glyphicon-trash">&nbsp</span></a>
-						<a href="#"><span class="glyphicon glyphicon-map-marker">&nbsp</span></a>
-						<a href="#"><span class="glyphicon glyphicon-saved">&nbsp</span></a>
-					</td>
-				</tr>
-				<tr>
-					<td class="col-md-1">1</td>
-					<td class="col-md-1">CO-5211</td>
-					<td class="col-md-1">4+300</td>
-					<td class="col-md-1">4+800</td>
-					<td class="col-md-2">26/12/2017</td>
-					<td class="col-md-2">26/02/2017</td>
-					<td class="col-md-4">
-						<a href="#"><span class="glyphicon glyphicon-eye-open">&nbsp</span></a>
-						<a href="#"><span class="glyphicon glyphicon-pencil">&nbsp</span></a>
-						<a href="#"><span class="glyphicon glyphicon-trash">&nbsp</span></a>
-						<a href="#"><span class="glyphicon glyphicon-map-marker">&nbsp</span></a>
-						<a href="#"><span class="glyphicon glyphicon-saved">&nbsp</span></a>
-					</td>
-				</tr>
+				<% } %>
 			</tbody>
 		</table>
 		 

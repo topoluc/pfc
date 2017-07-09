@@ -1,1 +1,53 @@
-kk
+<title><%= title %></title>
+
+<div class="row">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h3 class="panel-title">Crear Orden de trabajo</h3>
+		</div>
+		<div class="panel-body">
+			<form class="form-horizontal" action="/agenda" method="get" role="form">
+				<div class="form-group row">
+					<div class="col-md-6">
+						<label for="name">Carretera:</label>
+						<input class="form-control" id="ctra" name="name"/>
+					</div>
+					<div class="col-md-3">
+						<label>PK Inicial:</label>
+						<input class="form-control" id="ctra" name="name"/>
+					</div>
+					<div class="col-md-3">
+						<label for="name">PK Final:</label>
+						<input class="form-control" id="ctra" name="name"/>
+					</div>
+				</div>
+				<div class="form-group row">
+					<div class="col-md-4">
+						<label for="name">Fecha de inicio:</label>
+						<input class="form-control" id="ctra" name="name"/>
+					</div>
+					<div class="col-md-4">
+						<label>Fecha estimada de finalización:</label>
+						<input class="form-control" id="ctra" name="name"/>
+					</div>
+				</div>
+				<div class="form-group row">
+					<div class="col-md-3">
+						<label for="name">Grupo:</label>
+						<input class="form-control" id="ctra" name="name"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-md-12">
+						<label for="review">Descripción:</label>
+						<textarea class="form-control" id="review" name="review" rows="5"></textarea>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-md-12">
+						<label for="review">Instrucciones:</label>
+						<textarea class="form-control" id="review" name="review" rows="5"></textarea>
+					</div>
+				</div>
+				<button type="submit" class="btn btn-default pull-right">Guardar</button>
+</form>

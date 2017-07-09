@@ -3,42 +3,55 @@
 <div class="row">
 	<div class="panel panel-default">
 		<div class="panel-heading">
-			<h3 class="panel-title">Mostrar orden de trabajo</h3>
+			<h3 class="panel-title">Mostrar Orden de trabajo</h3>
 		</div>
 		<div class="panel-body">
-			<div class="col-md-4">
-				<p>Número:</p>
-				<p>Fecha de inicio:</p>
-				<p>Fecha estimada de fin:</p>
-				<p>Descripción:</p>
-			</div>
-			<div class="col-md-4">
-				<p>Estado:</p>
-				<p>Número:</p>
-				<p>Número:</p>
-				<p>Número:</p>
-			</div>
-			<div class="col-md-4">
-				<div class="panel panel-default">
-					<div class="panel-heading">
-						<h3 class="panel-title">Ubicación</h3>
+			<div class="row">
+				<div class="col-md-8">
+					<p><b>Número:</b>&nbsp&nbsp&nbsp<%= orden.num %> </p>
+					<p><b>Estado:</b>&nbsp&nbsp&nbsp<%= orden.estado %> </p>
+					<p><b>Fecha de inicio:</b>&nbsp&nbsp&nbsp<%= orden.fechaini %> </p>
+					<div class="row">
+						<div class="col-md-6">
+							<p><b>Fecha estimada de cierre:</b>&nbsp&nbsp&nbsp<%= orden.fechaestfin %> </p>
+						</div>
+						<div class="col-md-6">
+							<p><b>Fecha real de cierre:</b>&nbsp&nbsp&nbsp<%= orden.fechafin %> </p>
+						</div>
 					</div>
-					<div class="panel-body">
-						<p>Carretera:</p>
-						<p>PK inicial:</p>
-						<p>PK final:</p>
-					</div>
+					<p><b>Grupo:</b>&nbsp&nbsp&nbsp<%= orden.grupo %> </p>
+					<!-- <div class="row"> -->
+						<!-- <div class="col-md-12"> -->
+							<p><b>Descripción:</b>&nbsp&nbsp&nbsp<%= orden.descr %> </p>
+							<p><b>Instrucciones:</b>&nbsp&nbsp&nbsp<%= orden.instr %> </p>
+						<!-- </div> -->
+					<!-- </div> -->
 				</div>
-				<div class="panel panel-default">
-					<div class="panel-heading">
-						<h3 class="panel-title">
-						<a data-toggle="collapse" href="#collapse1">Mapa</a></h3>
+				<div class="col-md-4">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title">Ubicación</h3>
+						</div>
+						<div class="panel-body">
+							<p><b>Carretera:</b>&nbsp&nbsp&nbsp<%= orden.ctra %></p>
+							<p><b>PK inicial:</b>&nbsp&nbsp&nbsp<%= orden.pkini %></p>
+							<p><b>PK final:</b>&nbsp&nbsp&nbsp<%= orden.pkfin %></p>
+						</div>
 					</div>
-					<div id="collapse1" class="panel-collapse collapse">
-						<img class="img-responsive img-rounded" src="https://maps.googleapis.com/maps/api/staticmap?center=Brooklyn+Bridge,New+York,NY&zoom=13&size=600x300&maptype=roadmap&key=AIzaSyBE0QxsElt5ywnUP4ClW8hRYRIsfUwJnNg">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title">
+							<a data-toggle="collapse" href="#collapse1">Mapa</a></h3>
+						</div>
+						<div id="collapse1" class="panel-collapse collapse">
+							<img class="img-responsive img-rounded" src="https://maps.googleapis.com/maps/api/staticmap?center=Brooklyn+Bridge,New+York,NY&zoom=13&size=600x300&maptype=roadmap&key=AIzaSyBE0QxsElt5ywnUP4ClW8hRYRIsfUwJnNg">
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
+</div>
+<div class="row">
+	<a href="/ordenes" class="btn btn-primary btn-lg btn-block">Cancelar</a>
 </div>
