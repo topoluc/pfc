@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<!-- <meta charset="utf-8" /> -->
+		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+				
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 		
@@ -25,31 +26,22 @@
 				</div>
 				<div id="navbar" class="collapse navbar-collapse">
 					<ul class="nav navbar-nav">
-						<li class="active"><a href="/ordenes"><span class="glyphicon glyphicon-wrench" aria-hidden="true"></span><span class="glyphicon glyphicon-road" aria-hidden="true"></span>&nbsp&nbspAgenda</a></li>
+						<li><a href="/ordenes"><span class="glyphicon glyphicon-road" aria-hidden="true"></span>&nbsp&nbspAgenda</a></li>
 						<li><a href="/mapa"><span class="glyphicon glyphicon-globe" aria-hidden="true"></span>&nbspMapa</a></li>
 						<li><a href="#contact">Contact</a></li>
 					</ul>
-				</div><!--/.nav-collapse -->
+				</div>
 			</div>
 		</nav>
 		
-		<!-- Insert Body here -->
 		<div class="container">
 			
 				<%- body %>
 
-		</div><!-- /.container -->
-
-		<!-- Footer -->
-		<div class="footer">
-			<div class="container-fluid">
-				<p class="text-center text-muted">© Alberto Henche Gómez - 2017</p>
-			</div>
 		</div>
-		
+
 		<script>
 			$(document).ready(function(){$('[data-toggle="tooltip"]').tooltip();});
 		</script>
 		
 	</body>
-</html>

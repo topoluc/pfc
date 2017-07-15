@@ -1,37 +1,56 @@
-<!-- <!DOCTYPE html> -->
-<!-- <html> -->
-	<!-- <head> -->
-		<title><%= title %></title>
-		<!--CARGAMOS LOS CSS EXTERNOS-->
-		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.1.0/dist/leaflet.css"
-			integrity="sha512-wcw6ts8Anuw10Mzh9Ytw4pylW8+NAD4ch3lqm9lzAsTxg0GFeJgoAtxuCLREZSC5lUXdVyo/7yfsqFjQ4S+aKw=="
-			crossorigin=""/>
-       			
-	<!-- </head> -->
-    <!-- <body> -->
-        <!--NUESTRO CODIGO HTML-->
-		<div id="contenedorMapa" style="height: 800px, width: 100%;"></div>
-				
+<title><%= title %></title>
 
-        <!--CARGAMOS LOS JAVASCRIPTS EXTERNOS-->
-		<script src="https://unpkg.com/leaflet@1.1.0/dist/leaflet.js"
-			integrity="sha512-mNqn2Wg7tSToJhvHcqfzLMU6J4mkOImSPTxVZAdo+lcPlk+GhZmYgACEe0x35K7YzW1zJ7XyJV/TT1MrdXvMcA=="
-			crossorigin=""></script>
-		
-        <!--CARGAMOS NUESTRO JAVASCRIPT-->
-        <script>
-			var capaOSM = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-				maxZoom: 19,
-				attribution: '© Colaboradores de OpenStreetMap'
-			});
+<!--NUESTRO CODIGO HTML-->
+<div id="contenedorMapa" ></div>
 
-			var map = L.map('contenedorMapa', {
-				center: [37.41293, -4.49610]
-				,zoom: 13
-				,layers : [capaOSM]
-			});
-		</script>
+<!--CARGAMOS LOS JAVASCRIPTS EXTERNOS-->
+
+<link href="../../libraries/Leaflet-1.1.0/dist/leaflet.css" rel="stylesheet" type="text/css" />
+<script src="../../libraries/Leaflet-1.1.0/dist/leaflet.js"></script>
 
 		
-	<!-- </body> -->
-<!-- </html> -->
+<!--CARGAMOS NUESTRO JAVASCRIPT-->
+<script>
+		
+	var ctras = L.geoJson(<%- jsonData %>, {style: {weight: 5}});
+	
+	var pnoa_ma = L.tileLayer.wms("http://www.ign.es/wms-inspire/pnoa-ma", {
+		layers: "OI.OrthoimageCoverage",//layer name (see get capabilities)
+		format: 'image/jpeg',
+		transparent: false,
+		version: '1.3.0',//wms version (see get capabilities)
+		attribution: "PNOA WMS. © Instituto Geográfico Nacional de España"
+	});
+	
+	var mapa_base = L.tileLayer.wms("http://www.ign.es/wms-inspire/mapa-raster", {
+		layers: "mtn_rasterizado",//layer name (see get capabilities)
+		format: 'image/jpeg',
+		transparent: false,
+		version: '1.3.0',//wms version (see get capabilities)
+		attribution: "Cartografía raster WMS. © Instituto Geográfico Nacional de España"
+	});
+	
+	var map = L.map('contenedorMapa',
+		{
+			minZoom: 11,
+			maxZoom: 18,
+			center: [37.40200, -4.48300],
+			zoom: 18,
+			layers: [pnoa_ma, ctras]
+		}
+	);
+		
+	var baseMaps = {
+    "Cartografía raster": mapa_base,
+    "PNOA_MA": pnoa_ma
+	};
+
+	var overlayMaps = {
+    "Carreteras": ctras
+	};
+	
+	L.control.layers(baseMaps, overlayMaps).addTo(map);
+	
+	L.control.scale().addTo(map);
+	
+</script>

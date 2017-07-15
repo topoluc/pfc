@@ -11,7 +11,6 @@ var users = require('./routes/users');
 var ordenes = require('./routes/ordenes');  //Import routes for "ordenes" area of site
 var mediciones = require('./routes/mediciones');  //Import routes for "mediciones" area of site
 
-
 //var routes = require('./routes/index');
 var app = express();
 
