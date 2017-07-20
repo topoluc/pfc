@@ -8,25 +8,50 @@ html, body, .container {
 }
 
 /* Estilos para la agenda */
-.table-fixed thead {
-  width: 97%;
+/* .table-fixed thead { */
+  /* width: 97%; */
+/* } */
+/* .table-fixed tbody { */
+  /* height: 250px; */
+  /* overflow-y: auto; */
+  /* width: 100%; */
+/* } */
+/* .table-fixed thead, .table-fixed tbody, .table-fixed tr, .table-fixed td, .table-fixed th { */
+  /* display: block; */
+/* } */
+/* .table-fixed tbody td, .table-fixed thead > tr> th { */
+  /* float: left; */
+  /* border-bottom-width: 0; */
+/* } */
+/* .panel { */
+	/* margin-top: 30px; */
+/* } */
+
+tbody {
+	display:block;
+	height:300px;
+	overflow:auto;
 }
-.table-fixed tbody {
-  height: 230px;
-  overflow-y: auto;
-  width: 100%;
+thead, tbody tr {
+	display:table;
+	width:100%;
+	table-lavout:fixed;
 }
-.table-fixed thead, .table-fixed tbody, .table-fixed tr, .table-fixed td, .table-fixed th {
-  display: block;
+thead {
+    width: calc( 100% - 1em )
 }
-.table-fixed tbody td, .table-fixed thead > tr> th {
-  float: left;
-  border-bottom-width: 0;
+.table > tbody > tr > td {
+     vertical-align: middle;
 }
+
+
 .panel {
 	margin-top: 30px;
 }
 
+.cerrada{ background-color: #BDBDBD; }
+.abierta{ background-color: #9FF781;}
+.fuera{ background-color: #F78181;}
 
 
 /* Estilos para la pagina de inicio */

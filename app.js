@@ -11,6 +11,10 @@ var users = require('./routes/users');
 var ordenes = require('./routes/ordenes');  //Import routes for "ordenes" area of site
 var mediciones = require('./routes/mediciones');  //Import routes for "mediciones" area of site
 
+//API DB
+var routesApi = require('./model/routes/ordenes');
+
+
 //var routes = require('./routes/index');
 var app = express();
 
@@ -32,7 +36,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(partials());
 
 app.use('/', index);
-app.use('/users', users);
+app.use('/api', routesApi);
+// app.use('/users', users);
 app.use('/ordenes', ordenes); // Add ordenes routes to middleware chain.
 app.use('/mediciones', mediciones); // Add mediciones routes to middleware chain.
 
@@ -56,3 +61,15 @@ app.use(function(err, req, res, next) {
 });
 
 module.exports = app;
+
+//Verificamos por consola la conexion a la bd
+let db = require('./model/db_promises')
+
+db.connect()
+    .then(obj => {
+        obj.done();
+		console.log('DB conectada');
+    })
+    .catch(error => {
+        console.log('ERROR:', error.message || error);
+    });

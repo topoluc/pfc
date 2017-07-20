@@ -7,6 +7,7 @@
     "devstart": "nodemon ./bin/www"
   },
   "dependencies": {
+    "bluebird": "^3.5.0",
     "body-parser": "~1.17.1",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.3",
@@ -14,7 +15,8 @@
     "express": "~4.15.2",
     "express-partials": "^0.3.0",
     "morgan": "~1.8.1",
-    "pg": "^6.4.0",
+    "pg-promise": "^6.3.5",
+    "request": "^2.81.0",
     "serve-favicon": "~2.4.2"
   },
   "devDependencies": {

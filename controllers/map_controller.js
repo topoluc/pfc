@@ -3,7 +3,7 @@ exports.map = function(req,res) {
 	
 	var cliente = require("../model/db.js"); // require Postgres module
 	
-	var ctras_query = cliente.query("SELECT row_to_json(fc) FROM ( SELECT 'FeatureCollection' As type, array_to_json(array_agg(f)) As features FROM (SELECT 'Feature' As type, ST_AsGeoJSON(st_transform(v.geom, 4326))::json As geometry, row_to_json((select l from (select gid, matricula, denom) as l)) As properties FROM pfc.via2 as v) As f) As fc");
+	var ctras_query = cliente.query("SELECT row_to_json(fc) FROM ( SELECT 'FeatureCollection' As type, array_to_json(array_agg(f)) As features FROM (SELECT 'Feature' As type, ST_AsGeoJSON(st_transform(v.geom, 4326))::json As geometry, row_to_json((select l from (select gid, matricula, denominacion, longitud) as l)) As properties FROM pfc.ctras_view as v) As f) As fc");
 
 	ctras_query.on("row", function (row, result) {
 		result.addRow(row);

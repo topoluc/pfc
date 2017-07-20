@@ -10,10 +10,24 @@ var ordenController = require('../controllers/orden_controller');
 router.get('/', ordenController.orden_list);
 
 /* GET request for creating a Orden. NOTE This must come before routes that display Orden (uses id) */
-router.get('/create', ordenController.orden_create_get);
+router.get('/new', ordenController.orden_create_get);
+
+/* GET request for one orden. */
+router.get('/:ordenid', ordenController.orden_detail);
+
+
+
 
 /* POST request for creating orden. */
-router.post('/create', ordenController.orden_create_post);
+// router.post('/create', ordenController.orden_create_post);
+
+
+
+
+
+
+
+
 
 /* GET request to delete orden. */
 router.get('/:id/delete', ordenController.orden_delete_get);
@@ -27,8 +41,6 @@ router.get('/:id/update', ordenController.orden_update_get);
 // POST request to update orden
 router.post('/:id/update', ordenController.orden_update_post);
 
-/* GET request for one orden. */
-router.get('/orden1', ordenController.orden_detail);
-// router.get('/:id', ordenController.orden_detail);
+
 
 module.exports = router;
