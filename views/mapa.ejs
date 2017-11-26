@@ -1,56 +1,477 @@
 <title><%= title %></title>
 
-<!--NUESTRO CODIGO HTML-->
+<!-- Plugin Leaflet.awesome-markers  -->
+<link rel="stylesheet" href="../../libraries/leaflet.awesome-markers/dist/leaflet.awesome-markers.css">
+<script src="../../libraries/leaflet.awesome-markers/dist/leaflet.awesome-markers.js"></script>
+
+<!-- Plugin Leaflet easybutton 2.0.0  -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet-easybutton@2.0.0/src/easy-button.css">
+<script src="https://unpkg.com/leaflet-easybutton@2.0.0/src/easy-button.js"></script>
+
+<!-- Plugin Leaflet IconLayers  -->
+<link rel="stylesheet" href="../../libraries/Leaflet-IconLayers-master/src/iconLayers.css">
+<script src="../../libraries/Leaflet-IconLayers-master/src/iconLayers.js"></script>
+
 <div id="contenedorMapa" ></div>
 
-<!--CARGAMOS LOS JAVASCRIPTS EXTERNOS-->
+<!-- Modal Dialog -->
+<div class="modal fade" id="myModal" role="dialog" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title">Buscador de puntos kilométricos</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row" style="margin: 5px;">
+					<form id="geoform" class="form-horizontal" action="/mapa/directa" method="get" role="form">
+						<div class="col-md-12">
+							<div class="form-group">
+								<label for="via">Carretera:</label>
+								<select class="form-control" name="idvia" value="" id="idvia">
+									<% for(var i=0; i < vias.length; i++) { %>
+										<option value=<%= vias[i].properties.gid %>><%= vias[i].properties.matricula + ",  " %><%= vias[i].properties.denominacion %></option>
+									<% }%>
+								</select>
+							</div>
+						</div>
+						<div class="col-md-3">
+							<div class="form-group">
+								<label for="pkini">Punto Kilométrico:</label>
+								<input class="form-control" placeholder="Ejemplo: 1+500" id="pk" name="pk" value=""/>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" id="confirm">Buscar</button>
+			</div>
+		</div>
+	</div>
+</div>
 
-<link href="../../libraries/Leaflet-1.1.0/dist/leaflet.css" rel="stylesheet" type="text/css" />
-<script src="../../libraries/Leaflet-1.1.0/dist/leaflet.js"></script>
-
-		
-<!--CARGAMOS NUESTRO JAVASCRIPT-->
 <script>
-		
-	var ctras = L.geoJson(<%- jsonData %>, {style: {weight: 5}});
 	
+	//Creamos layers de leaflet para los mapas de base
+	
+	var Esri_WorldTopoMap = L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
+		attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ, TomTom, Intermap, iPC, USGS, FAO, NPS, NRCAN, GeoBase, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), and the GIS User Community'
+	});
+		
 	var pnoa_ma = L.tileLayer.wms("http://www.ign.es/wms-inspire/pnoa-ma", {
 		layers: "OI.OrthoimageCoverage",//layer name (see get capabilities)
 		format: 'image/jpeg',
 		transparent: false,
 		version: '1.3.0',//wms version (see get capabilities)
-		attribution: "PNOA WMS. © Instituto Geográfico Nacional de España"
+		attribution: "PNOA Máxima Actualidad WMS. © Instituto Geográfico Nacional de España"
 	});
 	
-	var mapa_base = L.tileLayer.wms("http://www.ign.es/wms-inspire/mapa-raster", {
-		layers: "mtn_rasterizado",//layer name (see get capabilities)
-		format: 'image/jpeg',
-		transparent: false,
-		version: '1.3.0',//wms version (see get capabilities)
-		attribution: "Cartografía raster WMS. © Instituto Geográfico Nacional de España"
+	<!-- var IGN_base = L.tileLayer.wms("http://www.ign.es/wms-inspire/ign-base", { -->
+		<!-- layers: "",//layer name (see get capabilities) -->
+		<!-- format: 'image/jpeg', -->
+		<!-- transparent: false, -->
+		<!-- version: '1.3.0',//wms version (see get capabilities) -->
+		<!-- attribution: "© Instituto Geográfico Nacional de España" -->
+	<!-- }); -->
+		
+	<!-- var cyclemap = L.tileLayer('//eu.cycle.travel/topoclassical_eu/{z}/{x}/{y}.png',  { bounds: [ [-90,-45 ],[90,180] ] }); -->
+	
+	//Creamos una layer para las carreteras a partir del geojson
+	var ctras = L.geoJson(<%- carreteras %>, {
+		style: {
+			weight: 4,
+		},
+		onEachFeature: function (feature, layer) {
+			layer.bindTooltip(feature.properties.matricula, {
+				className: "matriculas",
+				permanent: true,
+				direction:"center"
+			});
+			layer.on('click', function (e) {
+                var lat = e.latlng.lat;
+		        var lng = e.latlng.lng;
+		        $.getJSON('http://localhost:3000/mapa/inversa/longitud/'+lng+'/latitud/'+lat, function (respuesta) {
+					//formateamos el pk de respuesta
+					var str = respuesta.properties.pk;
+					if (str.length <= 3) {
+						str = "P.K. 0+"+str;
+					} else if (str.length == 4) {
+						str = "P.K. " + str.substr(0, 1) + "+" + str.substr(1);
+					} else {
+						str = "P.K. " + str.substr(0, 2) + "+" + str.substr(2);
+					};
+					respuesta.properties.pk = str;
+			        layer.bindPopup("<div class='row'><b>"+ respuesta.properties.matricula +"</b></br>" +
+							respuesta.properties.denom +"</br>" +
+							"<i><b>"+respuesta.properties.pk +"</i></b></br>"+
+						"</div>"+
+						"<div class='row'>"+
+							"<div class='col-md-offset-8 col-md-4'>"+
+								"<a href='/ordenes/new?id="+respuesta+"' data-tooltip='true' title='Crear orden de trabajo'><span class='glyphicon glyphicon-wrench'>&nbsp</span></a>"+
+								"<a href='http://maps.google.com/maps?q=&layer=c&cbll="+respuesta.geometry.coordinates[1]+","+respuesta.geometry.coordinates[0]+"&cbp=11,0,0,0,0' target='_blank' data-tooltip='true' title='Ver en Street View'><i class='fa fa-street-view'>&nbsp</i></a>"+
+							"</div>"+
+						"</div>", {minWidth : 175})
+		        });
+                
+            })
+		}
 	});
 	
+	//Lo mismo para los pks
+	var pks = L.geoJson(<%- hitos %>, {
+		pointToLayer: function(feature,latlng){
+			label = 'PK'+String(feature.properties.pk) // Must convert to string, .bindTooltip can't use straight 'feature.properties.attribute'
+			return new L.CircleMarker(latlng, {
+				radius: 2,
+				color: 'red',
+				fillcolor: 'red'
+			}).bindTooltip(label, {
+				className: "pks",
+				permanent: true,
+				opacity: 1,
+				offset: L.point(-20, 5),
+				direction:"center",
+			})
+		}
+	});
+	
+	// function that creates the popup content for ordenes
+	function createPopupContent(feature) {
+		return function () {
+			return "<div class='row'>"+
+				"<b>Orden de trabajo (</b>" + feature.properties.estado +"<b>)</b></br>"+
+				"</br>"+
+				"<b>Identificador: </b>" + feature.properties.num +"</br>" +
+				"<b>Fecha ini.: </b>" + feature.properties.fechaini +"</br>" +
+				"<b>Fecha est. fin: </b>" + feature.properties.f_estimada+"</br>"+
+				"<b>Carretera: </b>" + feature.properties.matricula+"</br>"+
+				"<b>Denominación: </b>" + feature.properties.denom+"</br>"+
+				"<b>PK inicial: </b>" + feature.properties.pkini+"</br>"+
+				"<b>PK final: </b>" + feature.properties.pkfin+"</br>"+
+				"<b>Descripción: </b>" + feature.properties.descr+"</br>"+
+				"<br>"+
+				"<b>Latitud: </b>" + Math.round(loc.lat * 1000000) / 1000000+"</br>"+
+				"<b>Longitud: </b>" + Math.round(loc.lng * 1000000) / 1000000+"</br>"+
+				"<br>"+
+			"</div>"+
+			"<div class='row'>"+
+				"<div class='col-md-offset-2 col-md-4'></div>"+
+				"<div class='col-md-6'>"+
+					"<a href='/ordenes/"+ feature.properties.num +"' data-tooltip='true' title='Mostrar orden'><span class='glyphicon glyphicon-eye-open'>&nbsp</span></a>"+
+					"<a href='/ordenes/"+ feature.properties.num +"/update' data-tooltip='true' title='Actualizar orden'><span class='glyphicon glyphicon-pencil'>&nbsp</span></a>"+
+					"<a href='/ordenes/"+ feature.properties.num +"/mediciones/new' data-tooltip='true' title='Crear / Modificar parte de trabajo'><span class='glyphicon glyphicon-tasks'>&nbsp</span></a>"+
+					"<a href='/ordenes/"+ feature.properties.num +"/cost' data-tooltip='true' title='Mostrar coste económico'><span class='glyphicon glyphicon-euro'>&nbsp</span></a>"+
+					"<a href='http://maps.google.com/maps?q=&layer=c&cbll="+loc.lat+","+loc.lng+"&cbp=11,0,0,0,0' target='_blank' data-tooltip='true' title='Ver en Street View'><i class='fa fa-street-view'>&nbsp</i></a>"+
+				"</div>"+
+			"</div>";
+		}
+	}
+		
+	// function that is called when line is clicked
+	function onOrderClick(e) {// e is a leaflet Event object
+		loc = e.latlng;
+	}
+		
+	//funcion para lanzar los popups en las ordenes
+	function onEachFeature (feature, layer) {
+		layer.id = feature.properties.num,
+		layer.on('click', onOrderClick);
+		layer.bindPopup(createPopupContent(feature))
+	};
+	
+	//creamos layers de leaflet para las ordenes
+	var p_urgentes = L.geoJson(<%- ordenesp %>, {
+		filter: function(feature, layer) {
+			return feature.properties.estado == "Urgente";
+        },
+		pointToLayer: function(feature, latlng) {
+			return new L.marker(latlng, {
+				icon: L.AwesomeMarkers.icon({
+					icon: 'wrench', 
+					prefix: 'glyphicon', 
+					markerColor: 'red'
+				})
+			});
+		},
+		onEachFeature: onEachFeature
+	});
+		
+	var p_encurso = L.geoJson(<%- ordenesp %>, {
+		filter: function(feature, layer) {
+			return feature.properties.estado == "En curso";
+        },
+		pointToLayer: function(feature, latlng) {
+			return new L.marker(latlng, {
+				icon: L.AwesomeMarkers.icon({
+					icon: 'wrench', 
+					prefix: 'glyphicon', 
+					markerColor: 'orange'
+				})
+			});
+		},
+		onEachFeature: onEachFeature
+	});
+	
+	var p_fuera = L.geoJson(<%- ordenesp %>, {
+		filter: function(feature, layer) {
+			return feature.properties.estado == "Fuera de plazo";
+        },
+		pointToLayer: function(feature, latlng) {
+			return new L.marker(latlng, {
+				icon: L.AwesomeMarkers.icon({
+					icon: 'wrench', 
+					prefix: 'glyphicon', 
+					markerColor: 'lightred'
+				})
+			});
+		},
+		onEachFeature: onEachFeature
+	});
+	
+	var p_ejecutada = L.geoJson(<%- ordenesp %>, {
+		filter: function(feature, layer) {
+			return feature.properties.estado == "Ejecutada";
+        },
+		pointToLayer: function(feature, latlng) {
+			return new L.marker(latlng, {
+				icon: L.AwesomeMarkers.icon({
+					icon: 'wrench', 
+					prefix: 'glyphicon', 
+					markerColor: 'lightgreen'
+				})
+			});
+		},
+		onEachFeature: onEachFeature
+	});
+	
+	
+	
+	
+	
+	
+	var l_urgentes = L.geoJson(<%- ordenesl %>, {
+		filter: function(feature, layer) {
+			return feature.properties.estado == "Urgente";
+        },
+		style: function(feature) {
+			return {
+				weight: 5,
+				color: 'red'
+			};
+		},
+		onEachFeature: onEachFeature
+	});
+	
+	var l_encurso = L.geoJson(<%- ordenesl %>, {
+		filter: function(feature, layer) {
+			return feature.properties.estado == "En curso";
+        },
+		style: function(feature) {
+			return {
+				weight: 5,
+				color: 'orange'
+			};
+		},
+		onEachFeature: onEachFeature
+	});
+		
+	var l_fuera = L.geoJson(<%- ordenesl %>, {
+		filter: function(feature, layer) {
+			return feature.properties.estado == "Fuera de plazo";
+        },
+		style: function(feature) {
+			return {
+				weight: 5,
+				color: '#F5A9A9'
+			};
+		},
+		onEachFeature: onEachFeature
+	});
+	
+	var l_ejecutada = L.geoJson(<%- ordenesl %>, {
+		filter: function(feature, layer) {
+			return feature.properties.estado == "Ejecutada";
+        },
+		style: function(feature) {
+			return {
+				weight: 5,
+				color: '#ACFA58'
+			};
+		},
+		onEachFeature: onEachFeature
+	});
+	
+	
+		
+	//creamos los clusters de marcadores.
+	var markers = L.markerClusterGroup();
+	markers.addLayer(p_urgentes);
+	markers.addLayer(p_encurso);
+	markers.addLayer(p_fuera);
+	markers.addLayer(p_ejecutada);
+
+
+		
+	//agrupamos las ordenes para mandarlas al mapa
+	var ordenes = L.layerGroup([markers, l_urgentes, l_encurso, l_fuera, l_ejecutada]);
+	<!-- var encurso = L.layerGroup([p_encurso, l_encurso]); -->
+	<!-- var fueraplazo = L.layerGroup([p_fuera, l_fuera]); -->
+	
+	//Creamos el objeto mapa de leaflet y le cargamos las layers con las que va a iniciar
 	var map = L.map('contenedorMapa',
 		{
-			minZoom: 11,
+			minZoom: 10,
 			maxZoom: 18,
-			center: [37.40200, -4.48300],
-			zoom: 18,
-			layers: [pnoa_ma, ctras]
+			center: [0, 0],
+			zoom: 13,
+			layers: [Esri_WorldTopoMap, ctras, pks, ordenes],
 		}
 	);
+	
+	// zoom dinamico
+	var lastZoom;
+    map.on('zoomend', function() {
+		var zoom = map.getZoom();
+		if (zoom < 14 && (!lastZoom || lastZoom >= 14)) {
+			//ocultamos los pk segun el rango de zoom
+			map.removeLayer(pks);
+			//ocultamos los tooltips de cualquier capa (aunque solo los tienen las carreteras segun el rango de zoom
+			map.eachLayer(function(layer) {
+				if (layer.getTooltip) {
+					var toolTip = layer.getTooltip();
+					if (toolTip) {
+						this.map.closeTooltip(toolTip);
+					}
+				}
+			});
+		} else if (zoom >= 14 && (!lastZoom || lastZoom < 14)) {
+			//añadimos los pks al mapa
+			pks.addTo(map);
+			map.eachLayer(function(layer) {
+				if (layer.getTooltip) {
+					var toolTip = layer.getTooltip();
+					if (toolTip) {
+						this.map.addLayer(toolTip);
+					}
+				}
+			});
+		}
+		lastZoom = zoom;
+    })
+	
+	//fijamos la extension del mapa a la de la capa de carreteras
+	map.fitBounds(ctras.getBounds());
 		
-	var baseMaps = {
-    "Cartografía raster": mapa_base,
-    "PNOA_MA": pnoa_ma
+	//Añadimos el control de escala
+	L.control.scale({maxWidth: 200, imperial: false}).addTo(map);
+	
+	//Creamos un botón para ver el mapa a maxima extension 
+	L.easyButton( 'glyphicon-fullscreen', function(){
+		map.fitBounds(ctras.getBounds());
+		map.closePopup();
+	}).addTo(map);
+	
+	//creamos botón para la geocodificación directa
+	L.easyButton( 'glyphicon-road', function(){
+		$('#myModal').modal('show');
+		$("#confirm").on('click', function() {
+			var pk = $("#pk").val();
+			var idvia = $("#idvia").val();
+			$.getJSON('http://localhost:3000/mapa/directa/idvia/'+idvia+'/pk/'+pk, function (respuesta) {
+				$('#myModal').modal('hide');
+				var latlng = L.latLng(respuesta.geometry.coordinates[1], respuesta.geometry.coordinates[0]);
+				map.setView(latlng, 15, {animation: true});
+				var popup = L.popup({minWidth : 175})
+					.setLatLng([respuesta.geometry.coordinates[1], respuesta.geometry.coordinates[0]])
+					.setContent("<div class='row'><b>"+ respuesta.properties.matricula +"</b></br>" +
+											respuesta.properties.denom +"</br>" +
+											"<i><b>"+pk +"</i></b></br>"+
+										"</div>"+
+										"<div class='row'>"+
+											"<div class='col-md-offset-8 col-md-4'>"+
+												"<a href='/ordenes/new?id="+respuesta+"' data-tooltip='true' title='Crear orden de trabajo'><span class='glyphicon glyphicon-wrench'>&nbsp</span></a>"+
+												"<a href='http://maps.google.com/maps?q=&layer=c&cbll="+respuesta.geometry.coordinates[1]+","+respuesta.geometry.coordinates[0]+"&cbp=11,0,0,0,0' target='_blank' data-tooltip='true' title='Ver en Street View'><i class='fa fa-street-view'>&nbsp</i></a>"+
+											"</div>"+
+										"</div>")
+					.openOn(map);
+			});
+			//$("#geoform").submit();
+		});
+		
+	
+		
+	}).addTo(map);
+		
+	//Leyenda
+	var legend = L.control({position: 'topright'});
+
+	legend.onAdd = function (map) {
+		var div = L.DomUtil.create('div', 'info legend'),
+			grades = ['En curso', 'Fuera de plazo', 'De urgente ejecución', 'Ejecutadas'],
+			labels = []
+		;
+		div.innerHTML += '<h4>Conservación de la Red de Carreteras</h4>';
+		div.innerHTML += '<h5>Actuaciones de Vialidad</h5>';
+		div.innerHTML +='<h5><i style="background: red"></i></h5><h6><i>'+grades[2]+'</i></h6>';
+		div.innerHTML += '<h5>Actuaciones de Conservación ordinaria</h5>';
+        div.innerHTML +='<h5><i style="background: #F78181"></i></h5><h6><i>'+grades[1]+'</i></h6>';
+        div.innerHTML +='<h5><i style="background: orange"></i></h5><h6><i>'+grades[0]+'</i></h6>';
+		div.innerHTML +='<h5><i style="background: #ACFA58"></i></h5><h6><i>'+grades[3]+'</i></h6>';
+		return div;
 	};
 
-	var overlayMaps = {
-    "Carreteras": ctras
+	legend.addTo(map);
+
+	//zoom y apertura automatica de popup para una sola orden desde la agenda
+	var orden = "<%- orden %>";
+	if (orden != "") {
+		var target;
+		ordenes.eachLayer(function(layer) {
+			layer.eachLayer(function(layer) {
+				if (layer.id == orden) {
+					target = layer;
+					return
+				}
+			})
+		});
+		//Comprobamos si la geometria tiene varias coordenadas, es decir, es lineal
+		if (target._latlngs) {
+			if (target._latlngs%2 == 0) {
+			//Si tiene un numero par de vertices fijamos la localizacion en la mitad
+				var loc = target._latlngs[target._latlngs.length/2];
+			} else {
+				var loc = target._latlngs[(parseInt(target._latlngs.length/2))-1];
+			}
+		} else {
+		//Si es puntual cogemos sus coordenadas
+			var loc = target._latlng;
+		}
+		//Fijamos la vista del mapa en esa localizacion con un zoom
+		map.setView(loc, 17, {animation: true});
+		//Le pedimos que abra el popup
+		target.openPopup();
 	};
 	
-	L.control.layers(baseMaps, overlayMaps).addTo(map);
-	
-	L.control.scale().addTo(map);
-	
+	//Leaflet IconLayers para cambiar la cartografia de base
+	var iconLayersControl = new L.Control.IconLayers(
+		[
+			{
+				title: 'Mapa base', // use any string
+				layer: Esri_WorldTopoMap, // any ILayer
+				icon: '../../libraries/Leaflet-IconLayers-master/examples/icons/esri_worldterrain.png' // 80x80 icon
+			},
+			{
+				title: 'PNOA M.A.',
+				layer: pnoa_ma,
+				icon: '../../libraries/Leaflet-IconLayers-master/examples/icons/here_satelliteday.png'
+			}
+		], {
+			position: 'bottomright',
+			maxLayersInRow: 5
+		}
+	);
+	iconLayersControl.addTo(map);
+
 </script>
+

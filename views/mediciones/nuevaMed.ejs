@@ -1,0 +1,182 @@
+<title><%= title %></title>
+
+<div class="row" style="margin-right: 150px; margin-left: 150px;">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h3 class="panel-title">Parte de Trabajo para la orden nº <b><%= orden.num %></b></h3>
+		</div>
+		<div class="panel-body">
+			<div class="row">
+				<div class="col-md-4">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title">Ubicación</h3>
+						</div>
+						<div class="panel-body">
+							<p><b>Carretera:</b> <%= orden.matricula %></p>
+							<br>
+							<p><b>Denominación:</b> <%= orden.denom %></p>
+							<br>
+							<div class="row">
+								<div class="col-md-6">
+									<p><b>PK inicial:</b> <%= orden.pkini %></p>
+								</div>
+								<div class="col-md-6">
+									<p><b>PK final:</b> <%= orden.pkfin %></p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-8">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title">Otros datos</h3>
+						</div>
+						<div class="panel-body">
+							<div class="row">
+								<div class="col-md-4">
+									<p><b>Número de orden:</b> <%= orden.num %> </p>
+								</div>
+								<div class="col-md-4">
+									<p><b>Estado:</b> <%= orden.estado %> </p>
+								</div>
+								<div class="col-md-4">
+									<p><b>Grupo de operaciones:</b> <%= orden.actividad %></p>
+								</div>
+							</div>
+							<br>
+							<div class="row">
+								<div class="col-md-4">
+									<p><b>Fecha de inicio:</b> <%= orden.fechaini %> </p>
+								</div>
+								<div class="col-md-4">
+									<p><b>Fecha estimada de cierre:</b> <%= orden.f_estimada %> </p>
+								</div>
+								<div class="col-md-4">
+									<p><b>Fecha real de cierre:</b> <%= orden.fechafin %> </p>
+								</div>
+							</div>
+							<br>		
+							<p><b>Descripción:</b> <%= orden.descr %> </p>
+							<br>
+							<p><b>Instrucciones:</b> <%= orden.instr %> </p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title">Añadir mediciones</h3>
+						</div>
+						<div class="panel-body">
+							<form class="form-horizontal" action="" method="post" role="form">
+							<br>
+								<div class="form-group row">
+									<div class="col-md-6">
+										<label for="via">Operación / Material:</label>
+										<select class="form-control" id="operacion" name="operacion" value="<%= medicion.idope %>" id="medicion">
+											<% for(var i=0; i < operaciones.length; i++) { %>
+												<option value=<%= operaciones[i].gid %>><%= operaciones[i].codigo %> - <%= operaciones[i].descr %></option>
+											<%}%>
+										</select>
+									</div>
+									<div class="col-md-3">
+										<label>Unidad de medida:</label>
+										<input type="text" class="form-control" id="unidad" name="unidad" value="" disabled/>
+									</div>
+									<div class="col-md-3">
+										<label>Precio unitario (€):</label>
+										<input type="text" class="form-control" id="preciou" name="preciou" value="" disabled/>
+									</div>
+								</div>
+								<div class="form-group row">
+									<div class="col-md-4">
+										<label>Nº de unidades:</label>
+										<input type="text" class="form-control" id="nunidades" name="nunidades" value="<%= medicion.cantidad %>"/>
+									</div>
+									<div class="col-md-4">
+										<label>Coste de la operación (€):</label>
+										<input type="text" class="form-control" id="costeop" name="costeop" value="" disabled/>
+									</div>
+									<div class="col-md-4">
+										<button type="submit" class="btn btn-primary btn-lg btn-block" style="padding: 16px 0px";>Añadir</a>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+			<br>
+			<div class="row">
+				<div class="col-md-12">
+					<table id="parte" class="table text-center">
+						<thead>
+							<tr>
+								<th class="col-md-5 text-center">Operación / Material</th>
+								<th class="col-md-2 text-center">Fecha de medición</th>
+								<th class="col-md-1 text-center">Cantidad</th>
+								<th class="col-md-2 text-center">Coste (€)</th>
+								<th class="col-md-2 text-center"></th>
+							</tr>
+						</thead>
+						<tbody  id="tabla2">
+							<% for(var i=0; i < mediciones.length; i++) {%>
+								<tr height= "50px">
+									<td class="col-md-5 text-left"><%= mediciones[i].codigo %>&nbsp;&nbsp;-&nbsp;&nbsp;<%= mediciones[i].descr %></td>
+									<td class="col-md-2 text-center"><%= mediciones[i].fecha %></td>
+									<td class="col-md-1 text-center"><%= mediciones[i].cantidad %></td>
+									<td class="col-md-2 text-center"><%= mediciones[i].coste %></td>
+									<td class="col-md-2 text-center">
+										<a href="/mediciones/<%= mediciones[i].gid %>/update" data-tooltip="true" title="Editar medición"><span class="glyphicon glyphicon-pencil">&nbsp;</span></a>
+										<form method="POST" action="/mediciones/<%= mediciones[i].gid %>/delete?_method=delete" style="display:inline">
+											<a href="" data-toggle="modal" data-tooltip="true" title="Eliminar medición" data-target="#confirmDelete"><span class="glyphicon glyphicon-trash"></span></a>
+										</form>	
+									</td>
+								</tr>
+							<% } %>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row" style="margin-right: 200px; margin-left: 200px;">
+	<!-- <a href="javascript:history.back();" class="btn btn-primary btn-lg btn-block">Volver</a> -->
+	<a href="/ordenes" class="btn btn-primary btn-lg btn-block">Volver</a>
+</div>
+<br>
+<div class= "footer_med">
+	<p class="text-center text-muted"> IGC | Proyecto Final de Carrera | Alberto Henche Gómez</p>
+</div>
+
+
+<script>
+
+//muestra la unidad de medida y el precio unitario cuando se selecciona una operación de la lista desplegable
+$('#operacion').on('change', function() {
+	var myOp= this.value;
+	var operac = <%- JSON.stringify(operaciones) %>;
+	for (var i=0; i < operac.length; i++) {
+		if (myOp == operac[i].gid) {
+			$("#unidad").val(operac[i].unidad);
+			$("#preciou").val(operac[i].unitario);
+		return
+		}
+	}	
+});
+
+//calcula el coste de la operacion en función de la cantidad de unidades introducidas
+$('#nunidades').on('input', function() {
+	var cantidad = this.value;
+	var unitario = $('#preciou').val();
+	$("#costeop").val((cantidad*unitario).toFixed(2));
+});
+
+</script>
+
+<%- include('delete-confirm'); %>

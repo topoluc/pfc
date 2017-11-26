@@ -1,0 +1,71 @@
+<title><%= title %></title>
+
+<div class="panel-body" style="margin-right: 300px; margin-left: 300px;">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title">Datos de la nueva licitación</h3>
+				</div>
+				<div class="panel-body">
+					<form class="form-horizontal" action="/contrato/update?_method=put" method="post" role="form">
+					<br>
+						<div class="form-group row">
+							<div class="col-md-6">
+								<label for="via">Empresa adjudicataria:</label>
+								<input type="text" class="form-control" id="contratista" name="contratista" value="<%= contrato.adjudicatario %>"/>
+							</div>
+							<div class="col-md-3">
+								<label>Importe total de adjudicación (€):</label>
+								<input type="text" class="form-control" id="total" name="total" value="<%= contrato.total %>"/>
+							</div>
+						</div>
+						<br>
+						<div class="form-group row">
+							<div class="col-md-4">
+								<label for="fini">Fecha de inicio:</label>
+								<div class="input-group date" data-date-autoclose="true" data-date-orientation="bottom" data-date-format="dd/mm/yyyy" data-date-today-highlight="true" data-date-language="es" data-provide="datepicker">
+									<input type='text' class="form-control" placeholder="dd/mm/yyyy" name="fini" value="<%= contrato.fechaini %>"/>
+									<div class="input-group-addon">
+										<span class="glyphicon glyphicon-calendar"></span>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<label for="ffin">Fecha de fin del contrato:</label>
+								<div class='input-group date' data-date-autoclose="true" data-date-orientation="bottom" data-date-format="dd/mm/yyyy" data-date-today-highlight="true" data-date-language="es" data-provide="datepicker">
+									<input type='text' class="form-control" placeholder="dd/mm/yyyy" name="ffin" value="<%= contrato.fechafin %>"/>
+									<span class="input-group-addon">
+										<span class="glyphicon glyphicon-calendar"></span>
+									</span>
+								</div>
+							</div>
+						</div>
+						<br>
+						<div class="row" >
+							<div class="col-md-8">
+								<a type="submit" data-toggle="modal" data-target="#confirmUpdate" class="btn btn-primary btn-lg btn-block">Guardar</a>
+							</div>
+							<div class="col-md-4">
+								<a href="/" class="btn btn-default btn-lg btn-block">Volver</a>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+	
+<footer>
+	<p class="text-center text-muted"> IGC | Proyecto Final de Carrera | Alberto Henche Gómez - 2017</p>
+</footer>
+
+
+<script>
+	//seleccioón dinámica de los datos del contrato en caso de que falte algún dato a rellenar
+			document.getElementById("contratista").innerHTML = "<%= contrato.adjudicatario %>";
+			document.getElementById("total").innerHTML = "<%= contrato.total %>";
+</script>
+
+<%- include('update-confirm'); %>

@@ -1,0 +1,108 @@
+<title><%= title %></title>
+
+<div class="row" style="margin-right: 50px; margin-left: 50px;">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h3 class="panel-title">Editar medición</h3>
+		</div>
+		<div class="panel-body">
+			<form class="form-horizontal" action="/mediciones/<%= medicion.gid %>?_method=put" method="post" role="form">
+			<br>
+				<div class="form-group row">
+					<div class="col-md-6">
+						<label for="via">Operación:</label>
+						<select class="form-control" id="operacion" name="operacion" value="<%= medicion.idope %>" id="medicion">
+						<% for(var i=0; i < operaciones.length; i++) { %>
+							<option value=<%= operaciones[i].gid %>><%= operaciones[i].codigo %>&nbsp&nbsp&nbsp-&nbsp&nbsp&nbsp<%= operaciones[i].descr %></option>
+						<%}%>
+						</select>
+					</div>
+					<div class="col-md-3">
+						<label>Unidad de medida:</label>
+						<input type="text" class="form-control" id="unidad" name="unidad" value="" disabled/>
+					</div>
+					<div class="col-md-3">
+						<label>Precio unitario (€):</label>
+						<input type="text" class="form-control" id="preciou" name="preciou" value="" disabled/>
+					</div>
+				</div>
+				<br>
+				<div class="form-group row">
+					<div class="col-md-4">
+						<label>Nº de unidades:</label>
+						<input type="text" class="form-control" id="nunidades" name="nunidades" value="<%= medicion.cantidad %>"/>
+					</div>
+					<div class="col-md-4">
+						<label>Coste de la operación (€):</label>
+						<input type="text" class="form-control" id="costeop" name="costeop" value="" disabled/>
+					</div>
+				</div>
+				<br>
+				<div class="row">
+					<div class="col-md-8">
+						<button type="submit" class="btn btn-primary btn-lg btn-block">Guardar</a>
+					</div>
+					<div class="col-md-4">
+						<a href="javascript:window.history.back()" class="btn btn-default btn-lg btn-block">Volver</a>
+						<!-- <button type="button" class="btn btn-outline btn-default btn-lg btn-block" onclick="history.go(-1); return false;"><span class="glyphicon glyphicon-ban-circle"></span> Cancelar</button> -->
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<footer>
+	<p class="text-center text-muted"> IGC | Proyecto Final de Carrera | Alberto Henche Gómez - 2017</p>
+</footer>
+
+<script>
+
+//selección dinámica de la operación y actualizacion de los otros inputs
+	$(document).ready(function(){
+		var operacion = document.getElementById('operacion');
+		for (var i, j = 0; i = operacion.options[j]; j++) {
+			if (i.value == <%= medicion.idope %>) {
+				operacion.selectedIndex = j;
+				break;
+			};
+		};
+		var myOp= $('#operacion').val();
+		var operac = <%- JSON.stringify(operaciones) %>;
+		for (var i=0; i < operac.length; i++) {
+			if (myOp == operac[i].gid) {
+				$("#unidad").val(operac[i].unidad);
+				$("#preciou").val(operac[i].unitario);
+			}
+		}	
+		var cantidad = $('#nunidades').val();
+		var unitario = $('#preciou').val();
+		$("#costeop").val((cantidad*unitario).toFixed(2));
+	});
+	
+	
+//mostrar la unidad de medida, el precio unitario y el nuevo coste de la operación cuando se selecciona una de ellas de la lista desplegable
+$('#operacion').on('change', function() {
+	var myOp= this.value;
+	var operac = <%- JSON.stringify(operaciones) %>;
+	for (var i=0; i < operac.length; i++) {
+		if (myOp == operac[i].gid) {
+			$("#unidad").val(operac[i].unidad);
+			$("#preciou").val(operac[i].unitario);
+			var cantidad = $('#nunidades').val();
+			var unitario = $('#preciou').val();
+			$("#costeop").val((cantidad*unitario).toFixed(2));
+		return
+		}
+	}
+});
+
+//cálculo el coste de la operacion en función de la cantidad de unidades introducidas
+$('#nunidades').on('input', function() {
+	var cantidad = this.value;
+	var unitario = $('#preciou').val();
+	$("#costeop").val((cantidad*unitario).toFixed(2));
+});
+
+</script>
+

@@ -1,0 +1,77 @@
+<title><%= title %></title>
+
+<div class="row" style="margin-right: 100px; margin-left: 100px;">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h3 class="panel-title">Mostrar Orden de trabajo</h3>
+		</div>
+		<div class="panel-body">
+			<div class="row">
+				<div class="col-md-4">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title">Ubicación</h3>
+						</div>
+						<div class="panel-body">
+							<p><b>Carretera:</b>&nbsp&nbsp&nbsp<%= orden.matricula %></p>
+							<br>
+							<p><b>Denominación:</b>&nbsp&nbsp&nbsp<%= orden.denom %></p>
+							<br>
+							<div class="row">
+								<div class="col-md-6">
+									<p><b>PK inicial:</b>&nbsp&nbsp&nbsp<%= orden.pkini %></p>
+								</div>
+								<div class="col-md-6">
+									<p><b>PK final:</b>&nbsp&nbsp&nbsp<%= orden.pkfin %></p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-8">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title">Otros datos</h3>
+						</div>
+						<div class="panel-body">
+							<div class="row">
+								<div class="col-md-4">
+									<p><b>Número de orden:</b> <%= orden.num %> </p>
+								</div>
+								<div class="col-md-4">
+									<p><b>Estado:</b> <%= orden.estado %> </p>
+								</div>
+								<div class="col-md-4">
+									<p><b>Grupo de operaciones:</b> <%= orden.actividad %></p>
+								</div>
+							</div>
+							<br>
+							<div class="row">
+								<div class="col-md-4">
+									<p><b>Fecha de inicio:</b> <%= orden.fechaini %> </p>
+								</div>
+								<div class="col-md-4">
+									<p><b>Fecha estimada de cierre:</b> <%= orden.f_estimada %> </p>
+								</div>
+								<div class="col-md-4">
+									<p><b>Fecha real de cierre:</b> <%= orden.fechafin %> </p>
+								</div>
+							</div>
+							<br>		
+							<p><b>Descripción:</b> <%= orden.descr %> </p>
+							<br>
+							<p><b>Instrucciones:</b> <%= orden.instr %> </p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row" style="margin-right: 100px; margin-left: 100px;">
+	<a href="javascript:history.back();" class="btn btn-primary btn-lg btn-block">Volver</a>
+</div>
+
+<footer>
+	<p class="text-center text-muted"> IGC | Proyecto Final de Carrera | Alberto Henche Gómez - 2017</p>
+</footer>

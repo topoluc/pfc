@@ -4,30 +4,38 @@ var router = express.Router();
 // Require controller modules
 var medicionController = require('../controllers/medicion_controller');
 
-/// MEDICION ROUTES ///
+function requireRole (role) {
+    return function (req, res, next) {
+        if (req.session.user && role.indexOf(req.session.user.role) !== -1) {
+            next();
+        }
+         else {
+            res.redirect('/#');
+        }
+    }
+};
 
-/* GET request for creating a Medicion. NOTE This must come before routes that display Medicion (uses id) */
-router.get('/create', medicionController.medicion_create_get);
 
-/* POST request for creating medicion. */
-router.post('/create', medicionController.medicion_create_post);
+// MEDICION ROUTES
 
-/* GET request to delete medicion. */
-router.get('/:id/delete', medicionController.medicion_delete_get);
+//La creacion de mediciones va en el enrutador de ordenes 
 
-// POST request to delete medicion
-router.post('/:id/delete', medicionController.medicion_delete_post);
 
-/* GET request to update medicion. */
-router.get('/:id/update', medicionController.medicion_update_get);
+//GET request for list of all mediciones items
+router.get('/', requireRole("admin jefed jefeo"), medicionController.medicionList);
 
-// POST request to update medicion
-router.post('/:id/update', medicionController.medicion_update_post);
+//DELETE request to delete medicion
+router.delete('/:medicionid(\\d+)/delete', medicionController.medicionDelete);
 
-/* GET request for one medicion. */
-router.get('/:id', medicionController.medicion_detail);
+// GET request for obtaining the update form
+router.get('/:medicionid(\\d+)/update', medicionController.medicionEdit);
 
-/* GET request for list of all medicion items. */
-router.get('/', medicionController.medicion_list);
+// PUT request to update medicion
+router.put('/:medicionid(\\d+)', medicionController.medicionUpdate);
+
+//GET request for list of all mediciones items
+router.get('/control', requireRole("admin jefed jefeo"), medicionController.medicionControl);
+
+
 
 module.exports = router;

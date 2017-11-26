@@ -1,0 +1,131 @@
+<title><%= title %></title>
+
+<div class="row" style="margin-right: 200px; margin-left: 200px;">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h3 class="panel-title">Editar orden de trabajo</h3>
+		</div>
+		<div class="panel-body">
+			<form class="form-horizontal" action="/ordenes/<%= orden.gid %>?_method=put" method="post" role="form">
+			<br>
+				<div class="form-group row">
+					<div class="col-md-3">
+						<p><b>Número de orden:</b>&nbsp&nbsp&nbsp<%= orden.gid %></p>
+					</div>
+					<div class="col-md-3">
+						<p><b>Estado:</b>&nbsp&nbsp&nbsp<%= orden.estado %></p>
+					</div>
+					<div class="col-md-6">
+						<p><b>Grupo de operaciones:</b>&nbsp&nbsp&nbsp<%= orden.nombre %> <%= orden.actividad %></p>
+					</div>
+				</div>
+				<div class="form-group row">
+					<div class="col-md-6">
+						<label for="via">Carretera:</label>
+						<select class="form-control" name="via" value="<%= orden.idctra %>" id="via">
+							<% for(var i=0; i < vias.length; i++) { %>
+								<option value=<%= vias[i].gid %>><%= vias[i].matricula + ",  " %><%= vias[i].denom %></option>
+							<% }%>
+						</select>
+					</div>
+					<div class="col-md-3">
+						<label for="pkini">PK Inicial:</label>
+						<div class="input-group">
+							<input type="text" class="form-control" placeholder="Ejemplo: 1+500" id="copy-input" name="pkini" value="<%= orden.pkini %>"/>
+							<span class="input-group-btn">
+								<button class="btn btn-primary" type="button" id="copy-button"
+									data-toggle="tooltip" data-placement="button" title="Copiar en PK Final" onclick="copiar()">>></button>
+							</span>
+						</div><!-- /input-group -->
+					</div>
+					<div class="col-md-3">
+						<label for="pkfin">PK Final:</label>
+						<input type="text" class="form-control" id="copy-output" name="pkfin" value="<%= orden.pkfin %>"/>
+					</div>
+				</div>
+				<div class="form-group row">
+					<div class="col-md-4">
+						<label for="fini">Fecha de inicio:</label>
+						<div class="input-group date" data-date-autoclose="true" data-date-format="dd/mm/yyyy" data-date-today-highlight="true" data-date-language="es" data-provide="datepicker" data-date-orientation="bottom">
+							<input class="form-control" type='text' placeholder="dd/mm/yyyy" name="fini" value="<%= orden.fechaini %>"/>
+							<span class="input-group-addon">
+								<span class="glyphicon glyphicon-calendar"></span>
+							</span>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<label for="ffin">Fecha estimada de finalización:</label>
+						<div class='input-group date' data-date-autoclose="true" data-date-format="dd/mm/yyyy" data-date-today-highlight="true" data-date-language="es" data-provide="datepicker" data-date-orientation="bottom">
+							<input type='text' class="form-control" placeholder="dd/mm/yyyy" name="ffin" value="<%= orden.f_estimada %>"/>
+							<span class="input-group-addon">
+								<span class="glyphicon glyphicon-calendar"></span>
+							</span>
+						</div>
+					</div>
+				</div>
+				<div class="form-group row">
+					<div class="col-md-3">
+						<label for="grupo">Grupo de operaciones:</label>
+						<select class="form-control" name="grupo" id="grupo" value="<%= orden.idgrupo %>">
+						<br>
+							<% for(var i=0; i < grupos.length; i++) { %>
+								<option value=<%= grupos[i].id %>><%= grupos[i].nombre + ",  " %><%= grupos[i].actividad %></option>
+							<% }%>
+						</select>
+					</div>
+						<!-- </select> -->
+				</div>
+				<div class="form-group">
+					<div class="col-md-12">
+						<label for="descr">Descripción de la incidencia:</label>
+						<textarea class="form-control" id="descr" name="descr" rows="5"></textarea>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-md-12">
+						<label for="instr">Instrucciones de ejecución:</label>
+						<textarea class="form-control" id="instr" name="instr" rows="5"></textarea>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-8">
+						<a type="submit" data-toggle="modal" data-target="#confirmUpdate" class="btn btn-primary btn-lg btn-block">Guardar</a>
+					</div>
+					<div class="col-md-4">
+						<a href="javascript:history.back();" class="btn btn-default btn-lg btn-block">Cancelar</a>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<footer>
+	<p class="text-center text-muted"> IGC | Proyecto Final de Carrera | Alberto Henche Gómez - 2017</p>
+</footer>
+
+	<script>
+			//selección dinámica de la carretera en caso de que falte algún dato
+			var miVia = document.getElementById('via');
+			for(var i, j = 0; i = miVia.options[j]; j++) {
+				if (i.value == <%= orden.idctra %>) {
+				via.selectedIndex = j;
+				break;
+				};
+			};
+			
+			// lo mismo para el grupo
+			var miGrupo = document.getElementById('grupo');
+			for(var i, j = 0; i = miGrupo.options[j]; j++) {
+				if (i.value == <%= orden.idgrupo %>) {
+				grupo.selectedIndex = j;
+				break;
+				};
+			};
+									
+			//lo mismo para descripcion e instrucciones
+			document.getElementById("descr").innerHTML = "<%= orden.descr %>";
+			document.getElementById("instr").innerHTML = "<%= orden.instr %>";
+	</script>
+
+<%- include('update-confirm'); %>

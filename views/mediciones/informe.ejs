@@ -1,0 +1,299 @@
+<title><%= title %></title>
+
+
+<div class="row" style="margin-right: 300px; margin-left: 300px;">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h3 class="panel-title">Informe de control económico</h3>
+		</div>
+		<br>
+		<div class="panel-body">
+			<div class="row" style="margin-right: 50px; margin-left: 25px;">
+				<div class="col-md-4">
+					<p><b>Adjudicatario:</b> <%= contrato.adjudicatario %></p>
+				</div>
+				<div class="col-md-3">
+					<p><b>Periodo:</b> <%= contrato.fechaini %> al <%= contrato.fechafin %></p>
+				</div>
+				<div class="col-md-5">
+					<p class="inline"><b>Presupuesto total de adjudicación (IVA incluido):</b></p><p id="ppto" class="inline"><%= contrato.total %></p>
+				</div>
+			</div>
+			<br>
+			<br>
+			<div class="row" style="margin-right: 200px; margin-left: 200px;">
+				<div class="col-md-12">
+					<table id="resumen" class="table table-bordered table-hover dt-responsive"  width="100%" cellspacing="0">
+						<thead>
+							<tr>
+								<th>Fecha</th>
+								<th></th>
+								<th>Ejecutado (€)</th>
+								<th>Por ejecutar (€)</th>
+							</tr>
+						</thead>
+						<tbody id="tabla65">
+							<% for(var i=0; i < resumen.length; i++) {%>
+								<tr height= "50px">
+									<td><%= resumen[i].fecha %></td>
+									<td><%= resumen[i].año %></td>
+									<td><%= resumen[i].ejecutado %></td>
+									<td><%= resumen[i].falta %></td>
+								</tr>
+							<% } %>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<br>
+			<br>
+			<br>
+			<div class="row">
+				<div class="col-md-12">
+					<table id="certificaciones" class="table table-bordered table-hover dt-responsive"  width="100%" cellspacing="0">
+						<thead>
+							<!-- <tr> -->
+								
+								<!-- <th rowspan="2">CERTIFICACIONES</th> -->
+								<!-- <th rowspan="2" >TOTAL</th> -->
+								<!-- <th colspan="2" >Vialidad</th> -->
+								<!-- <th colspan="2" >Conservación</th> -->
+							<!-- </tr> -->
+							<tr>
+								<th>Fecha</th>
+								<th>Mes</th>
+								<th>Año</th>
+								<th>Total (€)</th>
+								<th>Ayuda a la Vialidad (€)</th>
+								<th>Ayuda a la Vialidad (%)</th>
+								<th>Conservación ordinaria (€)</th>
+								<th>Conservación ordinaria (%)</th>
+							</tr>
+						</thead>
+						<tbody id="tabla3">
+							<% for(var i=0; i < mediciones.length; i++) {%>
+								<tr height= "50px">
+									<td><%= mediciones[i].fecha %></td>
+									<td><%= mediciones[i].mes %></td>
+									<td><%= mediciones[i].año %></td>
+									<td><%= mediciones[i].total %></td>
+									<td><%= mediciones[i].vialidad %></td>
+									<td><%= mediciones[i].perc_vial %></td>
+									<td><%= mediciones[i].ordinaria %></td>
+									<td><%= mediciones[i].perc_ord %></td>
+								</tr>
+							<% } %>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<br>
+			<br>
+			<div class="row" style="margin-right: 200px; margin-left: 200px;">
+				<div id='chart' style="width:800px; height:300px;"></div>
+			</div>
+		</div>
+	</div>
+</div>
+<br>
+<div class="row" style="margin-right: 300px; margin-left: 300px;">
+	<a href="/" class="btn btn-primary btn-lg btn-block">Volver</a>
+</div>
+<br>
+<br>
+<div class= "footer_med">
+	<p class="text-center text-muted"> IGC | Proyecto Final de Carrera | Alberto Henche Gómez</p>
+</div>
+
+<!-- Cargamos la libreria flotr2 para gráficas -->
+<script src="../../../../libraries/flotr2.min.js"></script>
+
+<script>
+$(document).ready(function() {
+	
+	//Formatear presupuesto total
+	$('#ppto').text(parseFloat($('#ppto').text()).toFixed(2)+' €');
+	
+	var resumen = $('#resumen').DataTable({
+		"columnDefs": [
+            { "targets": 0, "visible": false },
+			{ "width": "30%", "targets": 1 }
+		],
+		"paging":   false,
+        "ordering": false,
+        "info":     false,
+		"searching": false,
+		"drawCallback": function ( settings ) {
+			var api = this.api();
+            var rows = api.rows( {page:'current'} ).nodes();
+			
+			var last = null;
+			
+			$(rows).eq(0).before(
+				$("<tr></tr>", {"class": "group"}).append($("<td></td>", {"class": "PPP", "text": "AÑO"}))
+				.append($("<td></td>", {"id": "ejecutado", "class": "noCount", "text": "0.00"})).append($("<td></td>", {"id": "falta", "class": "noCount", "text": "0.00"})).prop('outerHTML')
+			);
+			
+			api.column(2, {page: 'current'}).data().each(function (importe, i) {
+				val = api.row(api.row($(rows).eq(i)).index()).data();
+				
+				$("#ejecutado").text((parseFloat($("#ejecutado").text()) + parseFloat(val[2])).toFixed(2));
+				$("#falta").text((parseFloat($("#falta").text()) + parseFloat(val[3])).toFixed(2));
+			});
+		}
+	});
+
+    var certificaciones = $('#certificaciones').DataTable({
+		"language": {
+            "lengthMenu": "Mostrar _MENU_ registros",
+            "zeroRecords": "Ningún registro encontrado",
+            "info": "Mostrando del _START_ al _END_ de _TOTAL_ registros",
+            "infoFiltered": "(filtrado de un total de _MAX_ registros)",
+			"search": "Buscar:",
+			"paginate": {
+				"next":       "Siguiente",
+				"previous":   "Anterior"
+			}
+		},
+		"columnDefs": [
+            { "targets": [0,2], "visible": false },
+			{ "width": "10%", "targets": 1 },
+			{ "width": "18%", "targets": 2 }
+		],
+		"order": [[ 0, "asc" ]],
+		"displayLength": 10,
+		"drawCallback": function ( settings ) {
+			var api = this.api();
+            var rows = api.rows( {page:'current'} ).nodes();
+			
+			var last = null;
+						
+			api.column(2, {page: 'current'}).data().each(function (año, i) {
+				if (last !== año) {
+					$(rows).eq(i).before(
+						$("<tr></tr>", {"class": "group", "data-id": año}).append($("<td></td>", {"class": "año", "text": "AÑO "+año})).append($("<td></td>", {"id": año+"_total", "class": "noCount", "text": "0.00"}))
+						.append($("<td></td>", {"id": año+"_vial", "class": "noCount", "text": "0.00"})).append($("<td></td>", {"id": año+"_perc_vial", "class": "noCount", "text": "0.00"}))
+						.append($("<td></td>", {"id": año+"_ord", "class": "noCount", "text": "0.00"})).append($("<td></td>", {"id": año+"_perc_ord", "class": "noCount", "text": "0.00"})).prop('outerHTML')
+					);
+					last = año;
+				}
+				val = api.row(api.row($(rows).eq(i)).index()).data();
+								
+				$("#"+año+"_total").text((parseFloat($("#"+año+"_total").text()) + parseFloat(val[3])).toFixed(2));
+				
+				if (val[4]=="") {
+					$("#"+año+"_vial").text((parseFloat($("#"+año+"_vial").text()) + parseFloat("0.00")).toFixed(2));
+				} else {
+					$("#"+año+"_vial").text((parseFloat($("#"+año+"_vial").text()) + parseFloat(val[4])).toFixed(2));
+				}
+				$("#"+año+"_perc_vial").text((parseFloat($("#"+año+"_vial").text())*100/$("#"+año+"_total").text()).toFixed(2));
+				
+				if (val[6]=="") {
+					$("#"+año+"_ord").text((parseFloat($("#"+año+"_ord").text()) + parseFloat("0.00")).toFixed(2));
+				} else {
+					$("#"+año+"_ord").text((parseFloat($("#"+año+"_ord").text()) + parseFloat(val[6])).toFixed(2));
+				}
+				$("#"+año+"_perc_ord").text((parseFloat($("#"+año+"_ord").text())*100/$("#"+año+"_total").text()).toFixed(2));
+			});
+		},
+		
+		dom:
+			"<'row'<'col-sm-3'l><'col-sm-6 text-center'B><'col-sm-3'f>>" +
+			"<'row'<'col-sm-12'tr>>" +
+			"<'row'<'col-sm-5'i><'col-sm-7'p>>",  
+		
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ]
+			
+    });
+	
+	certificaciones.cells().every( function () {
+		switch (this.data()) {
+			case "JAN":
+				this.data("Enero");
+				break;
+			case "FEB":
+				this.data("Febrero");
+				break;
+			case "MAR":
+				this.data("Marzo");
+				break;
+			case "APR":
+				this.data("Abril");
+				break;
+			case "MAY":
+				this.data("Mayo");
+				break;
+			case "JUN":
+				this.data("Junio");
+				break;
+			case "JUL":
+				this.data("Julio");
+				break;
+			case "AUG":
+				this.data("Agosto");
+				break;
+			case "SEP":
+				this.data("Septiembre");
+				break;
+			case "OCT":
+				this.data("Octubre");
+				break;
+			case "NOV":
+				this.data("Noviembre");
+				break;
+			case "DEC":
+				this.data("Diciembre");
+				break;
+			case "":
+				this.data("0.00");
+		};
+	});
+	
+	//Redibujamos la tabla con los cambios
+	certificaciones.draw();
+	
+	
+	Flotr.draw(document.getElementById("chart"),
+		[
+			{
+				data: <%- JSON.stringify(conserv) %>,
+				label: 'Conservación ordinaria'
+			}, {
+				data: <%- JSON.stringify(vialidad) %>,
+				label: 'Ayuda a la Vialidad'
+			}],
+		{
+			legend: {
+				backgroundColor: '#D2E8FF' // Light blue 
+				},
+			title: "Inversión mensual",
+			colors: ["#D8F781", "#F78181"],
+			bars: {
+				show: true,
+				stacked: true,
+				barWidth: 0.5,
+				shadowSize: 0,
+				fillOpacity: 1,
+				lineWidth: 0
+			},
+			yaxis: {
+				min: 0,
+				tickDecimals: 0
+			},
+			xaxis: {
+				ticks: <%- JSON.stringify(meses) %>,
+				labelsAngle: 45
+			},
+			grid: {
+				horizontalLines: true,
+				verticalLines: false
+			}
+		}
+	);
+		
+});
+</script>
+
+<%- include('delete-confirm'); %>

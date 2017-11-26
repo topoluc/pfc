@@ -1,0 +1,145 @@
+<title><%= title %></title>
+
+<div class="row" style="margin-right: 200px; margin-left: 200px;">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h3 class="panel-title">Listado de operaciones ejecutadas | Total a origen: <b><%= total %> €</b></h3>
+		</div>
+		<br>
+		<div class="panel-body">
+			<div class="row">
+				<div class="col-md-12">
+					<table id="mediciones" class="table table-bordered table-hover dt-responsive"  width="100%" cellspacing="0">
+						<thead>
+							<tr>
+								<th>Via</th>
+								<th>Grupo</th>
+								<th>Coste</th>
+								<th>Operación</th>
+								<th>Fecha</th>
+								<th>Cant.</th>
+								<th>Ud.</th>
+								<th>Precio ud. (€)</th>
+								<th>Coste med. (€)</th>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody id="tabla3">
+							<% for(var i=0; i < mediciones.length; i++) {%>
+								<tr height= "50px">
+									<td><%= mediciones[i].matricula %>, <%= mediciones[i].denom %></td>
+									<td><%= mediciones[i].nombre %> <%= mediciones[i].actividad %></td>
+									<td><%= mediciones[i].coste %></td>
+									<td><%= mediciones[i].codigo %>- <%= mediciones[i].descr %></td>
+									<td><%= mediciones[i].fechamed %></td>
+									<td><%= mediciones[i].cantidad %></td>
+									<td><%= mediciones[i].unidad %></td>
+									<td><%= mediciones[i].unitario %></td>
+									<td><%= mediciones[i].costemed %></td>
+									<td>
+										<a href="/mediciones/<%= mediciones[i].gid %>/update" data-tooltip="true" title="Editar medición"><span class="glyphicon glyphicon-pencil">&nbsp;</span></a>
+										<form method="POST" action="/mediciones/<%= mediciones[i].gid %>/delete?_method=delete" style="display:inline">
+											<a href="" data-toggle="modal" data-tooltip="true" title="Eliminar medición" data-target="#confirmDelete"><span class="glyphicon glyphicon-trash"></span></a>
+										</form>	
+									</td>
+								</tr>
+							<% } %>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row" style="margin-right: 200px; margin-left: 200px;">
+	<a href="/" class="btn btn-primary btn-lg btn-block">Volver</a>
+</div>
+<br>
+<br>
+<div class= "footer_med">
+	<p class="text-center text-muted"> IGC | Proyecto Final de Carrera | Alberto Henche Gómez - 2017</p>
+</div>
+
+
+<script>
+$(document).ready(function() {
+    var table = $('#mediciones').DataTable({
+		"language": {
+            "lengthMenu": "Mostrar _MENU_ registros",
+            "zeroRecords": "Ningún registro encontrado",
+            "info": "Mostrando del _START_ al _END_ de _TOTAL_ registros",
+            "infoFiltered": "(filtrado de un total de _MAX_ registros)",
+			"search": "Buscar:",
+			"paginate": {
+				"next":       "Siguiente",
+				"previous":   "Anterior"
+			}
+		},
+		"columnDefs": [
+            { "targets": [0, 1, 2], "visible": false },
+			<!-- { "targets": 9, "ordered": false } -->
+
+		],
+		"order": [[ 0, 'asc' ], [ 1, 'asc' ], [ 3, 'asc' ], [ 4, 'asc' ]],
+		
+		"displayLength": 10,
+		
+		"drawCallback": function ( settings ) {
+			var api = this.api();
+            var rows = api.rows( {page:'current'} ).nodes();
+			
+			var last = null;
+			var sublast = null;
+			var grupo;
+			
+			var total = null;
+			var subtotal = null;
+			
+			var intVal = function ( i ) {
+	          	return typeof i === 'string' ? i.replace(/[\$,]/g, '_')*1 :
+					typeof i === 'number' ? i : 0;
+	        };
+					
+			api.column(0, {page: 'current'} ).data().each( function ( ctra, i ) {
+				ctra_assoc = ctra.substring(0, 6);
+				if (last !== ctra) {
+					$(rows).eq( i ).before(
+                       '<tr class="group" height= "50px"><td colspan="5">'+ctra.toUpperCase()+'</td><td colspan="2" class="'+ctra_assoc+'"></td></tr>'
+                    );
+					total = intVal(api.column(8, {page: 'current'}).data()[i]);
+					last = ctra;
+					sublast = null;
+				} else {
+					total += intVal(api.column(8, {page: 'current'}).data()[i]);
+				}
+				$("."+ctra_assoc).html(total.toFixed(2));
+				
+				grupo = api.column(1, {page: 'current'}).data()[i];
+				grupo_assoc = grupo.replace(/\s/g, "_");
+				if (sublast !== grupo) {
+					$(rows).eq( i ).before(
+                       '<tr class="subgroup" height= "50px"><td colspan="5">'+grupo+'</td><td colspan="2" class="'+ctra_assoc+'_'+grupo_assoc+'"></td></tr>'
+                    );
+					subtotal = intVal(api.column(8, {page: 'current'}).data()[i]);
+					sublast = grupo;
+				} else {
+					subtotal += intVal(api.column(8, {page: 'current'}).data()[i]);
+				};
+				$("."+ctra_assoc+'_'+grupo_assoc).html(subtotal.toFixed(2));
+			} );
+		},
+		
+		dom:
+			"<'row'<'col-sm-3'l><'col-sm-6 text-center'B><'col-sm-3'f>>" +
+			"<'row'<'col-sm-12'tr>>" +
+			"<'row'<'col-sm-5'i><'col-sm-7'p>>",  
+		
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ]
+			
+    });
+});
+</script>
+
+<%- include('delete-confirm'); %>

@@ -1,0 +1,114 @@
+<title><%= title %></title>
+
+<div class="row" style="margin-right: 190px; margin-left: 190px;">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h3 class="panel-title">Agenda de Estado de la Carretera</h3>
+		</div>
+		<br>
+		<div class="panel-body">
+			<div class="row">
+				<div class="col-md-12">
+					<table id="agenda" class="table text-center">
+						<thead>
+							<tr>
+								<th class="col-md-1 text-center">Num.</th>
+								<th class="col-md-1 text-center">Carretera</th>
+								<th class="col-md-3 text-center">Denominación</th>
+								<th class="col-md-1 text-center">PK ini.</th>
+								<th class="col-md-1 text-center">PK fin</th>
+								<th class="col-md-1 text-center">Fecha ini.</th>
+								<th class="col-md-1 text-center">Fecha est. fin</th>
+								<th class="col-md-2 text-center"></th>
+							</tr>
+						</thead>
+						<tbody>
+							<% for(var i=0; i < ordenes.length; i++) {
+									var color;
+									if (ordenes[i].idestado == 5) {
+										color ="cerrada";
+									} else if (ordenes[i].idestado == 4) {
+										color = "abierta";
+									} else if (ordenes[i].idestado == 3) {
+										color = "ejecutada";
+									} else if (ordenes[i].idestado == 2) {
+										color = "fuera";
+									} else {
+										color = "urgente";
+									}%>
+							<tr class="<%= color %>" height= "50px">
+								<td class="col-md-1 text-center"><%= ordenes[i].num %></td>
+								<td class="col-md-1 text-center"><%= ordenes[i].matricula %></td>
+								<td class="col-md-3 text-center"><%= ordenes[i].denom %></td>
+								<td class="col-md-1 text-center"><%= ordenes[i].pkini %></td>
+								<td class="col-md-1 text-center"><%= ordenes[i].pkfin %></td>
+								<td class="col-md-1 text-center"><%= ordenes[i].fechaini %></td>
+								<td class="col-md-1 text-center"><%= ordenes[i].f_estimada %></td>
+								<td class="col-md-2 text-center">
+									<a href="/ordenes/<%= ordenes[i].num %>" data-tooltip="true" title="Mostrar orden"><span class="glyphicon glyphicon-eye-open">&nbsp;</span></a>
+									<a href="/ordenes/<%= ordenes[i].num %>/update" data-tooltip="true" title="Editar orden"><span class="glyphicon glyphicon-pencil">&nbsp;</span></a>
+									<form method="POST" action="/ordenes/<%= ordenes[i].num %>/delete?_method=delete" style="display:inline">
+										<a href="" data-toggle="modal" data-tooltip="true" title="Eliminar orden" data-target="#confirmDelete"><span class="glyphicon glyphicon-trash">&nbsp;</span></a>
+									</form>	
+									<a href="/mapa/<%= ordenes[i].num %>" data-tooltip="true" title="Ver en mapa"><span class="glyphicon glyphicon-map-marker">&nbsp;</span></a>
+									<a href="/ordenes/<%= ordenes[i].num %>/mediciones/new" data-tooltip="true" title="Crear / Modificar parte de trabajo"><span class="glyphicon glyphicon-tasks">&nbsp;</span></a>
+									<a href="/ordenes/<%= ordenes[i].num %>/cost" data-tooltip="true" title="Mostrar coste económico"><span class="glyphicon glyphicon-euro">&nbsp;</span></a>
+									<form method="POST" action="/ordenes/<%= ordenes[i].num %>/close?_method=put" style="display:inline">
+										<a href="" data-toggle="modal" data-tooltip="true" title="Cerrar orden" data-target="#confirmClose"><span class="glyphicon glyphicon-saved"></span></a>
+									</form>
+								</td>
+							</tr>
+							<% } %>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+    </div>
+</div>
+
+<footer>
+	<p class="text-center text-muted"> IGC | Proyecto Final de Carrera | Alberto Henche Gómez - 2017</p>
+</footer>
+
+<script>
+$(document).ready(function() {
+    $('#agenda').DataTable({
+		"order": [[ 7, "asc" ]],
+		"language": {
+            "lengthMenu": "Mostrar _MENU_ registros",
+            "zeroRecords": "Ningún registro encontrado",
+            "info": "Mostrando del _START_ al _END_ de _TOTAL_ registros",
+            "infoFiltered": "(filtrado de un total de _MAX_ registros)",
+			"search": "Buscar:",
+			"paginate": {
+				"next":       "Siguiente",
+				"previous":   "Anterior"
+			}
+		},
+		"displayLength": 10,
+		dom: 
+			"<'row'<'col-md-1'<'neworden'>><'col-md-3'l><'col-md-1'<'leyenda'>><'col-md-4 text-center'B><'col-md-3'f>>" +
+			"<'row'<'col-md-12'tr>>" +
+			"<'row'<'col-md-5'i><'col-md-7'p>>",  
+		
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ]
+		
+	});
+	$("div.neworden").html('<a href="/ordenes/new" class="btn btn-default" role="button" data-toggle="tooltip" title="Crear orden"><span class="glyphicon glyphicon-plus-sign"></span></a>');
+	$("div.leyenda").html('<a href="#" data-toggle="popover" title="Estado de la orden"><span class="glyphicon glyphicon-info-sign"></span> Leyenda</a>');
+	$('[data-toggle="popover"]').popover({container: 'body',
+		html : true,
+		trigger: "hover",
+        content : '<div><div class="inline" style="width: 15px; height:15px; background-color: #FA5858;"></div><div class="inline"><h5><i>Urgente</i></h5></div></div><div><div class="inline" style="width: 15px; height:15px; background-color: #F5A9A9;"></div><div class="inline"><h5><i>Fuera de plazo</i></h5></div></div><div><div class="inline" style="width: 15px; height:15px; background-color: #81F79F;"></div><div class="inline"><h5><i>Ejecutada</i></h5></div></div><div><div class="inline" style="width: 15px; height:15px; background-color: #FACC2E;"></div><div class="inline"><h5><i>En curso</i></h5></div></div>'		
+	});
+	
+});
+</script>
+
+
+
+<%- include('delete-confirm'); %>
+<%- include('close-confirm'); %>
